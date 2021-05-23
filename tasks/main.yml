@@ -1,0 +1,39 @@
+---
+- name: Criando diretorio do agente Zabbix
+  file:
+    path: '{{ dir_instalacao_binario_zabbix }}'
+    state: directory
+
+- name: Obtendo pacote de instalacao
+  get_url:
+    url: '{{ url_download }}'
+    dest: '{{ dir_instalacao_binario_zabbix }}'
+
+- name: Verifica se pacote foi baixado e esta no padrao esperado
+  stat:
+    path: '{{ dir_instalacao_binario_zabbix }}/{{ nome_pacote_baixado }}'
+  register: file
+
+- name: Centos - Instalando agente
+  yum:
+    name: '{{ dir_instalacao_binario_zabbix }}/{{ nome_pacote_baixado }}'
+    state: present
+  when: file.stat.exists == true
+
+- name: ''
+  debug:
+    msg: "Arquivo nao encontrado"
+  when: file.stat.exists == false
+
+- name: Copia arquivo com variaveis dinamicas para alvo
+  template:
+    src: zabbix_agent2.conf
+    dest: /etc/zabbix/zabbix_agent2.conf
+    force: yes
+
+- name: Iniciando servico do Zabbix e habilitando autoload no boot
+  systemd:
+    name: zabbix-agent2
+    enabled: yes
+    state: started
+...

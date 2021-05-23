@@ -1,0 +1,8 @@
+dir_instalacao_binario_zabbix: /usr/local/bin/zabbix_agent2
+zabbix_server: 192.168.1.110
+zabbix_server_version: 5.0
+zabbix_agent_version: zabbix-agent2-5.0.9-1
+arquitetura: "{{ ansible_machine }}"
+versao_centos: "{{ ansible_distribution_major_version }}"
+url_download: "https://repo.zabbix.com/zabbix/{{zabbix_server_version}}/rhel/{{versao_centos}}/{{arquitetura}}/{{zabbix_agent_version}}.el{{versao_centos}}.{{arquitetura}}.rpm"
+nome_pacote_baixado: "{{zabbix_agent_version}}.el{{ansible_distribution_major_version}}.{{ansible_machine}}.rpm"
